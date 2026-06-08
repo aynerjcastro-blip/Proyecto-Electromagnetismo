@@ -16,40 +16,64 @@ export default function App() {
 
   return (
     <div style={{
-      minHeight: "100vh",
+      height: "100vh",
+      width: "100vw",
       background: "#080c14",
       fontFamily: "'JetBrains Mono', 'Fira Code', 'SF Mono', monospace",
       color: "#e0e6f0",
-      padding: 12,
+      padding: 8,
+      boxSizing: "border-box",
+      display: "flex",
+      flexDirection: "column",
+      overflow: "hidden",
+      gap: 6,
     }}>
+
       {/* Header */}
-      <div style={{ textAlign: "center", marginBottom: 12 }}>
+      <div style={{ textAlign: "center", flexShrink: 0 }}>
         <h1 style={{
-          fontSize: 18, fontWeight: 800, margin: 0,
+          fontSize: 16, fontWeight: 800, margin: 0,
           background: "linear-gradient(135deg, #3b82f6, #10b981, #f59e0b)",
           WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
         }}>
           Simulador RLC Acoplado Magnéticamente
         </h1>
-        <p style={{ fontSize: 10, color: "#6b7280", margin: "4px 0 0" }}>
+        <p style={{ fontSize: 9, color: "#6b7280", margin: "2px 0 0" }}>
           M = k√(L₁L₂) = {(M * 1000).toFixed(3)} mH
         </p>
       </div>
 
-      {/* Presets + play control */}
-      <PresetButtons onLoad={loadPreset} playing={playing} onTogglePlay={togglePlay} />
+      {/* Presets */}
+      <div style={{ flexShrink: 0 }}>
+        <PresetButtons onLoad={loadPreset} playing={playing} onTogglePlay={togglePlay} />
+      </div>
 
-      {/* Main layout */}
-      <div style={{ display: "grid", gridTemplateColumns: "220px 1fr", gap: 10 }}>
-        {/* Left sidebar */}
+      {/* Main layout — ocupa todo el espacio restante */}
+      <div style={{
+        display: "grid",
+        gridTemplateColumns: "200px 1fr",
+        gap: 8,
+        flex: 1,
+        minHeight: 0,        // crítico para que flex respete overflow
+        overflow: "hidden",
+      }}>
+
+        {/* Sidebar */}
         <ControlsSidebar
           params={params}
           updateParam={updateParam}
           currentPoint={currentPoint}
         />
 
-        {/* Right 2x2 grid of panels */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+        {/* 2x2 paneles */}
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
+          gridTemplateRows: "1fr 1fr",
+          gap: 8,
+          minHeight: 0,
+          overflow: "hidden",
+        }}>
           <CircuitDiagram
             I1={currentPoint.I1 ?? 0}
             I2={currentPoint.I2 ?? 0}
@@ -67,7 +91,11 @@ export default function App() {
         </div>
       </div>
 
-      <PhysicsChain />
+      {/* Footer */}
+      <div style={{ flexShrink: 0 }}>
+        <PhysicsChain />
+      </div>
+
     </div>
   );
 }
